@@ -1,0 +1,26 @@
+On Foot @VERSION@
+for Kerbal Space Program 1.12.x
+
+Walk the floor of the assembly building and the hangar in first person, at a kerbal's height: among the
+ground crew, and up to the craft you are building.
+
+INSTALL
+  Copy both folders in this download's GameData (Keystone and OnFoot) into your KSP's GameData folder,
+  and start the game. Keystone is the base this mod stands on; one copy serves every mod that uses it.
+  To remove the mod, delete the OnFoot folder.
+
+USE
+  In the assembly building or the hangar, press Option-W on a Mac (Alt-W elsewhere) to set off on foot.
+  Walk with W, A, S and D (the game's own EVA keys), look with the mouse, run with Shift, jump with
+  Space. Option-W (Alt-W) or Esc stops, and the game's camera comes back where it was.
+  From the space centre, point at the assembly building or the hangar and press Option-W (Alt-W) to
+  walk in at its door.
+  The Keystone window (the keystone button on the game's toolbar, or Option-K / Alt-K) has a page for
+  On Foot: speeds, eye height, the mouse, the field of view, a button to set off, and (at the space
+  centre) the crew car: a small rover put on the runway with a kerbal in its seat.
+
+WHERE IT WORKS
+  Made and tried on a Mac. Nobody has run it on Windows or Linux yet. It has no shaders of its own and
+  nothing in it is the Mac's own.
+
+Everything else: https://github.com/IshiakiZ/ksp-on-foot
