@@ -17,10 +17,13 @@ USE
   walk in at its door.
   The Keystone window (the keystone button on the game's toolbar, or Option-K / Alt-K) has a page for
   On Foot: speeds, eye height, the mouse, the field of view, a button to set off, and (at the space
-  centre) the crew car: a small rover put on the runway with a kerbal in its seat.
+  centre) the crew car: an airport baggage tug put on the runway with a kerbal in its seat, on a booster
+  (stock rover parts underneath, drawn as the tug; the page can show the stock parts instead). Its top
+  speed, 30 km/h unless changed on the page.
 
 WHERE IT WORKS
-  Made and tried on a Mac. Nobody has run it on Windows or Linux yet. It has no shaders of its own and
-  nothing in it is the Mac's own.
+  Made and tried on a Mac, and tried on Windows 11: walking in the assembly building and the crew
+  car. Nobody has run it on Linux yet. It has no shaders of its own (the tug is drawn with the game's
+  own part shaders) and nothing in it is the Mac's own.
 
 Everything else: https://github.com/IshiakiZ/ksp-on-foot

@@ -1,8 +1,8 @@
 # On Foot
 
 Walk the floor of the assembly building and the hangar in first person, at a kerbal's height: among the
-ground crew, under the rocket on its clamps, out through the great door onto the crawlerway. And a small
-car for the ground crew, of the game's own parts, to drive about the space centre.
+ground crew, under the rocket on its clamps, out through the great door onto the crawlerway. And a car for
+the ground crew to drive about the space centre: an airport baggage tug.
 
 For Kerbal Space Program 1.12.x. Needs [Keystone](https://github.com/IshiakiZ/ksp-keystone), which comes in the download, and
 nothing else.
@@ -21,16 +21,23 @@ Copy the `Keystone` and `OnFoot` folders from the download's `GameData` into you
 * The **crew car**: from the space centre, open the Keystone window (the keystone button on the toolbar,
   or Option-K / Alt-K), turn to **On Foot** and press **Drive the crew car**. It is put on the runway with
   a kerbal in its seat and a storage crate on the back, and driven with the rover keys like any rover.
+  It looks like an electric baggage tug, real size (a model of the mod's own, drawn over the stock rover
+  parts the game drives), so its kerbal driver sits on a child's booster seat. It drives itself up to
+  30 km/h; **Top speed** on the same page changes that, and **Looks like a baggage tug** shows the stock
+  parts instead.
 * The same page has the walking and running speeds, the eye height, the mouse, the field of view, and
   how much the head moves with each step.
 
 The other buildings of the space centre have no inside to walk in: their menus show a kerbal in front of a
 painted backdrop, or a picture ([what was found](docs/The-other-buildings.md)).
 
-## Which systems it works on
+## Where it works
 
-Made and tried on a Mac. It has no shaders and nothing else of the Mac's own, so it should work the same
-on Windows and Linux; nobody has run it there yet.
+| System | |
+| --- | --- |
+| Mac | Made and tried here (KSP 1.12.5, OpenGL). |
+| Windows | Tried on Windows 11 (KSP 1.12.5, Direct3D 11): walking in the assembly building, set off by the page's button and by Alt-W, moved with W and stopped with Alt-W and Escape; the crew car taken out from the page, drawn as the baggage tug on the runway and driven. Walking into the hangar from the space centre (Alt-W with the pointer on it) and about inside it. Then running (Shift with W: 6.8 m in a second and a half, against 2.4 walking) and jumping (Space: half a metre up, 0.63 s off the floor), pressed on the keyboard. |
+| Linux | **Never run.** It has no shaders and nothing else of one system's own (the tug is drawn with the game's own part shaders). |
 
 More: [how it works](docs/How-it-works.md), [limits](docs/Limits.md),
 [what was tested](docs/What-was-tested.md),

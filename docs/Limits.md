@@ -25,6 +25,24 @@
 * **The crew car** goes out from the space centre onto the runway, as a craft launched from the hangar
   does. It is not put down beside a ship already in flight. Its driver is the first pilot free (or anyone
   free); with nobody free it goes out empty, driven by its probe core.
+* **The tug is only drawn.** Its body has no colliders of its own: what meets the ground and anything else
+  is still the stock parts under it, the RoveMate's box (smaller than the tug's body) and the four wheels. A
+  kerbal on foot can walk into the tug's bonnet or its cab's posts, and bumps into the hidden box and wheel
+  arms instead; the seat is boarded where the stock seat is, which is where the tug's seat is drawn.
+* **Its tyres are smaller than the wheels that carry it** (0.55 m across against the RoveMax's 0.95 m: the
+  game draws that wheel 1.25 times its written size, and rolls it so). They stand where the wheels touch the
+  ground and roll at their pace, but over a sharp bump a tyre can dip into the ground or float over it by a
+  few centimetres.
+* **Real sizes, small driver.** The tug is drawn at the size of a real one; a kerbal is small, and sits in
+  it on a child's booster seat, which brings its head up to where a grown-up's would be. Its hands stay
+  where the game's seated pose holds them, at its sides on the booster's arms, just under the steering
+  wheel; its feet do not reach the pedals. The steering wheel turns, but the kerbal's hands do not move
+  with it. The doors do not open.
+* **The top speed is the motors', not a limit.** Downhill the car rolls faster than its top speed, as any
+  car would with its foot off the pedal; on the level it holds there. It is set for every crew car at
+  once, on On Foot's page.
+* **Only the crew car is dressed**: a vessel of exactly its parts, with "Crew Car" in its name. Renamed, it
+  shows its stock parts. The beacon flashes whenever the lights are on; it has no switch of its own.
 * **Tried by its author, through the game's remote control**: the walking, the turning and the jumps were
   driven by a script, and nobody has yet walked with the keys and the mouse. How fast the mouse turns the
   view (`Mouse speed`) is set from Unity's usual mouse axis and has not been tried by hand.

@@ -71,3 +71,58 @@ first, a career pays for it as for any craft rolled out, and in a career or scie
 have been researched. If anything is on the runway already it says so and does nothing (it does not clear
 the runway itself). It is then a craft like any other: driven with the rover keys, recovered from the
 runway.
+
+### The baggage tug
+
+What is seen of the car is an airport baggage tractor of its own, drawn over the stock parts it is made of:
+a RoveMate body, four RoveMax M1 wheels (the front pair steers), an outside command seat, a storage crate
+and two lamps. The game still drives those parts, with its own wheels and physics; only what is drawn
+changes, and nothing is added to the craft. In flight, every vessel made of those parts whose name has
+"Crew Car" in it gets the tug, and loses it again if a part comes off or the page's **Looks like a baggage
+tug** is turned off.
+
+* **Where it goes.** The car's own frame is worked out from where its parts are: up from the plane of its
+  four wheel pivots, forward from the crate (at the back) to the seat, the ground under the middle of its
+  wheels as the origin. The tug's body is fixed there on the car's root part, posed again once the car has
+  stood still on the ground for a second (the first pose may be in the air as it is put down). The seat,
+  steering column, dashboard and pedals stand round the seat's own pivot, where the game seats the driver.
+* **What is hidden.** Every renderer of the car's parts is switched off but the kerbal's and the crate's
+  (the crate rides on the tug's deck); every half second anything the game has switched on again is
+  switched off. Turning the tug off switches them all back on. The parts' colliders stay as they were.
+* **The wheels.** The craft's wheels stand where the tug's tyres are drawn (0.6 m either side of the middle,
+  0.85 m ahead of and behind it): they were built on the RoveMate's sides and moved in under the body in
+  the craft file (the game lets parts overlap; parts of one vessel do not collide). Each tyre follows one
+  wheel: it turns with the wheel's steering (read from where the wheel's axle points), rises and falls
+  with its suspension (how far the wheel's pivot has moved on its part), and rolls as the wheel rolls (how
+  far the wheel's spokes have turned since the last frame, scaled up for the tyre's smaller size, 0.275 m
+  against the wheel's 0.4725 m: the RoveMax's written 0.378 m made 1.25 times larger, as the game draws and rolls it). The steering wheel turns eight times as far as the front wheels.
+* **The booster seat.** The tug is a real one's size and its seat a grown-up's; a kerbal is small, so it
+  sits on a child's backless booster seat (a moulded grey plastic shell with arms, a padded blue cover, red
+  belt guides, a cup holder at one side) on the tug's seat, which lifts it 0.15 m: its helmet comes up under
+  the roof, where a grown-up driver's head would be, with the steering wheel just before its chest; its
+  hands rest on the booster's arms (the game's seated pose holds them at its sides) and its feet hang clear
+  of the pedals. For that the stock seat stands 0.15 m higher in the craft file than where the editor put it
+  (the game seats the kerbal at the seat part's own pivot), and the roof is 5 cm higher than at first.
+* **The top speed** (30 km/h unless the page says otherwise; a real baggage tug does about 25). Each of the
+  car's wheel motors is given a torque curve of its own: the stock one up to 85% of the top speed, falling
+  away smoothly past it and giving nothing from 3% over it (the game looks the curve up against how fast
+  the wheel's rim is turning). Nothing else is touched: no force of the mod's, no speed held. So the car
+  pulls up to its top speed on the level and stays there; downhill it can roll faster, the brakes work as
+  ever, and a wheel spinning on loose ground also gives out at the top speed. At 100 km/h the stock curves
+  are back (the RoveMax's own limit, about 95 km/h). The stock curves go back too when the car stops
+  being a crew car (a wheel lost, say).
+* **The lamps.** The headlamps glow with the car's lights, the tail lamps glow dimly with them and brightly
+  with the brakes on, and the beacon on the roof flashes while the lights are on. The two lamps' own lights
+  (the game's, which light the ground) are moved each frame to the tug's headlamps and pointed ahead and a
+  little down; they go back where their parts have them when the tug comes off.
+* **How it is drawn.** With the game's own part shaders (`KSP/Specular` for the paint, `KSP/Bumped Specular`
+  for the tyres and the deck's tread plate, `KSP/Emissive/Specular` for the lamps), so there is no shader of
+  the mod's and nothing that differs from one system to another. It casts and takes shadows as parts do.
+* **Where it comes from.** `Model/tug.py`, a script run in Blender with no window (see
+  [Building](Building.md)), models it to real sizes (3.1 m long with the tow jaw, 1.45 m wide, 2.1 m to the
+  top of the roof, wheels 0.55 m across on a 1.7 m wheelbase), rounds its edges, cuts its wheel arches, unwraps it, and
+  bakes its paint, wear and dirt, its shading (ambient occlusion) and how glossy each place is into
+  pictures; the tyres' tread and the deck's diamond plate are normal maps. It writes `tug.mesh` (the meshes
+  in Unity's axes) and the pictures into `PluginData`, which the mod reads the first time a car is dressed
+  (about a quarter of a second). The fleet number, 214, is made up; there is no maker's or company's name or
+  mark on it.

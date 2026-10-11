@@ -3,7 +3,7 @@ using Keystone;
 using UnityEngine;
 
 #if !DEV
-[assembly: KSPAssembly("OnFoot", 0, 1)]
+[assembly: KSPAssembly("OnFoot", 0, 2)]
 [assembly: KSPAssemblyDependency("Keystone", 0, 4)]
 #endif
 
@@ -25,7 +25,7 @@ namespace OnFoot
     /// </summary>
     public static class Foot
     {
-        public const string Version = "0.1.0";
+        public const string Version = "0.2.1";
         internal const string Name = "On Foot";
 
         internal static Mod mod;
@@ -46,7 +46,16 @@ namespace OnFoot
             fov = mod.Slider("fov", "Field of view", 60f, 35f, 95f, "°", 0, "How much you see, from the top of the picture to the bottom.");
             bob = mod.Slider("bob", "Head movement", 0.5f, 0f, 1f, "", 2, "How much your head rises and falls with each step. None at 0.");
             hint = mod.Toggle("hint", "Show the keys on starting", true, "For a few seconds after you set off, the keys are shown at the foot of the picture.");
+            mod.Heading("The crew car");
+            tug = mod.Toggle("tug", "Looks like a baggage tug", true, "The crew car is drawn as an airport baggage tractor. Off, it shows the stock rover parts it is made of (it drives the same either way).");
+            topSpeed = mod.Slider("speed", "Top speed", 30f, 10f, 100f, " km/h", 0, "How fast the crew car can drive itself on the level: its wheels' motors give less and less pull near this speed and none past it (a real baggage tug does about 25 km/h). It is not held there: downhill it can roll faster, and the brakes work as ever. At 100, the stock rover wheels' own limit (about 95 km/h).");
         }
+
+        internal static Toggle tug;
+        internal static Slider topSpeed;
+
+        /// <summary>The crew car's top speed in metres a second, or nought for the stock wheels' own.</summary>
+        internal static float TopSpeed => topSpeed == null || topSpeed.Value >= 99.5f ? 0f : topSpeed.Value / 3.6f;
 
         /// <summary>The walk under way, if there is one.</summary>
         internal static Walk Current;

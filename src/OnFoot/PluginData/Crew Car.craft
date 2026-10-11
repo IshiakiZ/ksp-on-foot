@@ -1,10 +1,10 @@
 ship = Crew Car
 version = 1.12.5
-description = The ground crew's car: a RoveMate on four RoveMax wheels, a seat for the driver, a storage crate and two lamps.
+description = The ground crew's car: an electric baggage tug on a RoveMate with four RoveMax wheels, a seat for the driver, a storage crate and two lamps.
 type = SPH
-size = 2.87769747,1.50684929,2.10147524
+size = 2.87769747,1.50684929,2.2514751
 steamPublishedFileId = 0
-persistentId = 1245959559
+persistentId = 1290029121
 rot = 0,0,0,1
 missionFlag = Squad/Flags/default
 vesselType = Rover
@@ -14,9 +14,9 @@ OverrideAxisControl = 0,0,0,0
 OverrideGroupNames = ,,,
 PART
 {
-	part = roverBody.v2_4289994983
+	part = roverBody.v2_4289991085
 	partName = Part
-	persistentId = 1670695348
+	persistentId = 125193359
 	pos = 0,4.76356983,0
 	attPos = 0,0,0
 	attPos0 = 0,4.76356983,0
@@ -38,15 +38,16 @@ PART
 	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
-	link = roverWheel1_4289991788
-	link = roverWheel1_4289990166
-	link = roverWheel1_4289981411
-	link = roverWheel1_4289975793
-	link = seatExternalCmd_4289968482
-	link = smallCargoContainer_4289961638
-	link = spotLight1.v2_4289957553
-	link = spotLight1.v2_4289952525
-	link = batteryPack_4289951518
+	link = roverWheel1_4289982203
+	link = roverWheel1_4289974278
+	link = roverWheel1_4289966400
+	link = roverWheel1_4289962002
+	link = seatExternalCmd_4289956097
+	link = smallCargoContainer_4289947495
+	link = spotLight1.v2_4289940929
+	link = spotLight1.v2_4289937376
+	link = ksp.r.largeBatteryPack_4289928837
+	link = ksp.r.largeBatteryPack_4289925807
 	attN = right,Null_0_0.510226011|0|0_1|0|0_0.510226011|0|0_1|0|0
 	attN = left,Null_0_-0.510226011|0|0_-1|0|0_-0.510226011|0|0_-1|0|0
 	attN = back,Null_0_0|0|0.224069998_0|0|1_0|0|0.224069998_0|0|1
@@ -247,12 +248,12 @@ PART
 }
 PART
 {
-	part = roverWheel1_4289991788
+	part = roverWheel1_4289982203
 	partName = Part
-	persistentId = 982432360
-	pos = 0.896884084,4.36106968,0.450000048
+	persistentId = 595972506
+	pos = 0.373000,4.361070,0.850000
 	attPos = 0,0,0
-	attPos0 = 0.896884084,0.449999839,0.402500153
+	attPos0 = 0.373000,0.850000,0.402500
 	rot = 0,1.00000012,0,-4.37113918E-08
 	attRot = 0,0,0,1
 	attRot0 = 3.09086197E-08,0.707106769,-0.707106769,-3.09086197E-08
@@ -271,8 +272,8 @@ PART
 	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
-	sym = roverWheel1_4289990166
-	srfN = srfAttach,roverBody.v2_4289994983,,0.386656851|0.402500004|0,1.25|0|0,0.386656851|0.402500004|0
+	sym = roverWheel1_4289974278
+	srfN = srfAttach,roverBody.v2_4289991085,,0.386656851|0.402500004|0,1.25|0|0,0.386656851|0.402500004|0
 	EVENTS
 	{
 	}
@@ -521,12 +522,12 @@ PART
 }
 PART
 {
-	part = roverWheel1_4289990166
+	part = roverWheel1_4289974278
 	partName = Part
-	persistentId = 1429187081
-	pos = -0.896884084,4.36106968,0.450000048
+	persistentId = 26175312
+	pos = -0.373000,4.361070,0.850000
 	attPos = 0,0,0
-	attPos0 = -0.896884084,0.449999839,0.402500153
+	attPos0 = -0.373000,0.850000,0.402500
 	rot = 0,0,0,-1.00000012
 	attRot = 0,0,0,1
 	attRot0 = 0.707106769,0,0,-0.707106769
@@ -545,8 +546,8 @@ PART
 	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
-	sym = roverWheel1_4289991788
-	srfN = srfAttach,roverBody.v2_4289994983,,0.386656851|0.402500004|0,1.25|0|0,0.386656851|0.402500004|0
+	sym = roverWheel1_4289982203
+	srfN = srfAttach,roverBody.v2_4289991085,,0.386656851|0.402500004|0,1.25|0|0,0.386656851|0.402500004|0
 	EVENTS
 	{
 	}
@@ -795,12 +796,12 @@ PART
 }
 PART
 {
-	part = roverWheel1_4289981411
+	part = roverWheel1_4289966400
 	partName = Part
-	persistentId = 1454369493
-	pos = 0.896880269,4.36106968,-0.450000077
+	persistentId = 1047323696
+	pos = 0.373000,4.361070,-0.850000
 	attPos = 0,0,0
-	attPos0 = 0.896880269,-0.449999958,0.402500093
+	attPos0 = 0.373000,-0.850000,0.402500
 	rot = 0,1.00000012,0,-4.37113918E-08
 	attRot = 0,0,0,1
 	attRot0 = 3.09086197E-08,0.707106769,-0.707106769,-3.09086197E-08
@@ -819,8 +820,8 @@ PART
 	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
-	sym = roverWheel1_4289975793
-	srfN = srfAttach,roverBody.v2_4289994983,,0.386656851|0.402500004|0,1.25|0|0,0.386656851|0.402500004|0
+	sym = roverWheel1_4289962002
+	srfN = srfAttach,roverBody.v2_4289991085,,0.386656851|0.402500004|0,1.25|0|0,0.386656851|0.402500004|0
 	EVENTS
 	{
 	}
@@ -895,7 +896,7 @@ PART
 		name = ModuleWheelSteering
 		isEnabled = True
 		autoSteeringAdjust = True
-		steeringEnabled = True
+		steeringEnabled = False
 		steeringInvert = False
 		angleTweakable = 25
 		responseTweakable = 2
@@ -1069,12 +1070,12 @@ PART
 }
 PART
 {
-	part = roverWheel1_4289975793
+	part = roverWheel1_4289962002
 	partName = Part
-	persistentId = 2015240462
-	pos = -0.896880269,4.36106968,-0.450000077
+	persistentId = 1661142672
+	pos = -0.373000,4.361070,-0.850000
 	attPos = 0,0,0
-	attPos0 = -0.896880269,-0.449999958,0.402500093
+	attPos0 = -0.373000,-0.850000,0.402500
 	rot = 0,0,0,-1.00000012
 	attRot = 0,0,0,1
 	attRot0 = 0.707106769,0,0,-0.707106769
@@ -1093,8 +1094,8 @@ PART
 	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
-	sym = roverWheel1_4289981411
-	srfN = srfAttach,roverBody.v2_4289994983,,0.386656851|0.402500004|0,1.25|0|0,0.386656851|0.402500004|0
+	sym = roverWheel1_4289966400
+	srfN = srfAttach,roverBody.v2_4289991085,,0.386656851|0.402500004|0,1.25|0|0,0.386656851|0.402500004|0
 	EVENTS
 	{
 	}
@@ -1169,7 +1170,7 @@ PART
 		name = ModuleWheelSteering
 		isEnabled = True
 		autoSteeringAdjust = True
-		steeringEnabled = True
+		steeringEnabled = False
 		steeringInvert = False
 		angleTweakable = 25
 		responseTweakable = 2
@@ -1343,12 +1344,12 @@ PART
 }
 PART
 {
-	part = seatExternalCmd_4289968482
+	part = seatExternalCmd_4289956097
 	partName = Part
-	persistentId = 147340346
-	pos = 0,5.18763733,0.200000048
+	persistentId = 1199203053
+	pos = 0,5.337637,0.25000006
 	attPos = 0,0,0
-	attPos0 = 0,0.200000003,-0.424067467
+	attPos0 = 0,0.25,-0.574067
 	rot = -0.707106829,0,0,-0.707106829
 	attRot = 0,0,0,1
 	attRot0 = 0,0,0,-1
@@ -1367,7 +1368,7 @@ PART
 	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
-	srfN = srfAttach,roverBody.v2_4289994983,,0|0|0.200000003,0|0|-1,0|0|0.200000003
+	srfN = srfAttach,roverBody.v2_4289991085,,0|0|0.200000003,0|0|-1,0|0|0.200000003
 	EVENTS
 	{
 	}
@@ -1458,12 +1459,12 @@ PART
 }
 PART
 {
-	part = smallCargoContainer_4289961638
+	part = smallCargoContainer_4289947495
 	partName = Part
-	persistentId = 1757821026
-	pos = 0,5.23763752,-0.450000048
+	persistentId = 113701461
+	pos = 0,5.23763752,-0.600000024
 	attPos = 0,0,0
-	attPos0 = 0,-0.449999869,-0.474067688
+	attPos0 = 0,-0.599999845,-0.474067688
 	rot = -0.707106829,0,0,-0.707106829
 	attRot = 0,0,0,1
 	attRot0 = 0,0,0,-1
@@ -1482,7 +1483,7 @@ PART
 	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
-	srfN = srfAttach,roverBody.v2_4289994983,,0|0|0.25,0|0|-1,0|0|0.25
+	srfN = srfAttach,roverBody.v2_4289991085,,0|0|0.25,0|0|-1,0|0|0.25
 	attN = top,Null_0_0|0.349999994|0_0|1|0_0|0.349999994|0_0|1|0
 	attN = bottom,Null_0_0|-0.349999994|0_0|-1|0_0|-0.349999994|0_0|-1|0
 	EVENTS
@@ -1548,9 +1549,9 @@ PART
 }
 PART
 {
-	part = spotLight1.v2_4289957553
+	part = spotLight1.v2_4289940929
 	partName = Part
-	persistentId = 2131692803
+	persistentId = 1161699654
 	pos = 0.349999994,4.7758708,0.960227013
 	attPos = 0,0,0
 	attPos0 = 0.349999994,0.960226476,-0.0123009104
@@ -1572,8 +1573,8 @@ PART
 	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
-	sym = spotLight1.v2_4289952525
-	srfN = srfAttach,roverBody.v2_4289994983,,0|0.0123009998|0.213942096,0|0|-1,0|0.0123009998|0.213942096
+	sym = spotLight1.v2_4289937376
+	srfN = srfAttach,roverBody.v2_4289991085,,0|0.0123009998|0.213942096,0|0|-1,0|0.0123009998|0.213942096
 	EVENTS
 	{
 	}
@@ -1761,9 +1762,9 @@ PART
 }
 PART
 {
-	part = spotLight1.v2_4289952525
+	part = spotLight1.v2_4289937376
 	partName = Part
-	persistentId = 1504967651
+	persistentId = 1574431627
 	pos = -0.349999994,4.7758708,0.960227013
 	attPos = 0,0,0
 	attPos0 = -0.349999994,0.960226476,-0.0123009104
@@ -1785,8 +1786,8 @@ PART
 	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
-	sym = spotLight1.v2_4289957553
-	srfN = srfAttach,roverBody.v2_4289994983,,0|0.0123009998|0.213942096,0|0|-1,0|0.0123009998|0.213942096
+	sym = spotLight1.v2_4289940929
+	srfN = srfAttach,roverBody.v2_4289991085,,0|0.0123009998|0.213942096,0|0|-1,0|0.0123009998|0.213942096
 	EVENTS
 	{
 	}
@@ -1974,15 +1975,15 @@ PART
 }
 PART
 {
-	part = batteryPack_4289951518
+	part = ksp.r.largeBatteryPack_4289928837
 	partName = Part
-	persistentId = 693840486
-	pos = 0,4.53949833,1.49011612E-08
+	persistentId = 1816108344
+	pos = 0.510227203,4.76356983,0
 	attPos = 0,0,0
-	attPos0 = 0,-7.96061893E-16,0.224071488
-	rot = 0,0.707107008,0.70710665,0
+	attPos0 = 0.510227203,0,0
+	rot = -0.5,0.50000006,0.50000006,-0.5
 	attRot = 0,0,0,1
-	attRot0 = 0,0.99999994,-2.5288108E-07,0
+	attRot0 = 0,0.707106829,0,-0.707106769
 	mir = 1,1,1
 	symMethod = Mirror
 	autostrutMode = Off
@@ -1998,7 +1999,8 @@ PART
 	modCost = 0
 	modMass = 0
 	modSize = 0,0,0
-	srfN = srfAttach,roverBody.v2_4289994983,,0|0|0,0|0|-1,0|0|0
+	sym = ksp.r.largeBatteryPack_4289925807
+	srfN = srfAttach,roverBody.v2_4289991085,,0|0|0,0|0|-1,0|0|0
 	EVENTS
 	{
 	}
@@ -2044,8 +2046,90 @@ PART
 	RESOURCE
 	{
 		name = ElectricCharge
-		amount = 100
-		maxAmount = 100
+		amount = 400
+		maxAmount = 400
+		flowState = True
+		isTweakable = True
+		hideFlow = False
+		isVisible = True
+		flowMode = Both
+	}
+}
+PART
+{
+	part = ksp.r.largeBatteryPack_4289925807
+	partName = Part
+	persistentId = 1568857635
+	pos = -0.510227203,4.76356983,0
+	attPos = 0,0,0
+	attPos0 = -0.510227203,0,0
+	rot = 0.5,0.50000006,0.50000006,0.49999997
+	attRot = 0,0,0,1
+	attRot0 = 4.21468478E-08,0.707106829,0,0.707106709
+	mir = 1,1,1
+	symMethod = Mirror
+	autostrutMode = Off
+	rigidAttachment = False
+	istg = -1
+	resPri = 0
+	dstg = 0
+	sidx = -1
+	sqor = -1
+	sepI = -1
+	attm = 1
+	sameVesselCollision = False
+	modCost = 0
+	modMass = 0
+	modSize = 0,0,0
+	sym = ksp.r.largeBatteryPack_4289928837
+	srfN = srfAttach,roverBody.v2_4289991085,,0|0|0,0|0|-1,0|0|0
+	EVENTS
+	{
+	}
+	ACTIONS
+	{
+		ToggleSameVesselInteraction
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		SetSameVesselInteraction
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+		RemoveSameVesselInteraction
+		{
+			actionGroup = None
+			wasActiveBeforePartWasAdjusted = False
+		}
+	}
+	PARTDATA
+	{
+	}
+	MODULE
+	{
+		name = ModuleCargoPart
+		isEnabled = True
+		beingAttached = False
+		beingSettled = False
+		reinitResourcesOnStoreInVessel = False
+		stagingEnabled = True
+		EVENTS
+		{
+		}
+		ACTIONS
+		{
+		}
+		UPGRADESAPPLIED
+		{
+		}
+	}
+	RESOURCE
+	{
+		name = ElectricCharge
+		amount = 400
+		maxAmount = 400
 		flowState = True
 		isTweakable = True
 		hideFlow = False

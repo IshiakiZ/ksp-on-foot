@@ -23,8 +23,8 @@ namespace OnFoot
         /// <summary>Where the craft is kept.</summary>
         public static string CraftPath => Path.Combine(KSPUtil.ApplicationRootPath, "GameData/OnFoot/PluginData/Crew Car.craft");
 
-        /// <summary>Why the car cannot be put on the runway just now, or nothing if it can.</summary>
-        public static string WhyNot()
+        /// <summary>Why the car cannot be put on the runway (or another launch site) just now, or nothing if it can.</summary>
+        public static string WhyNot(string site = Site)
         {
             if (HighLogic.LoadedScene != GameScenes.SPACECENTER) return "The crew car is sent out from the space centre's view.";
             if (HighLogic.CurrentGame == null) return "No game is loaded.";
@@ -46,15 +46,15 @@ namespace OnFoot
             }
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER && Funding.Instance != null && Funding.Instance.Funds < cost)
                 return "The car costs " + cost.ToString("N0") + " funds, and there are " + Funding.Instance.Funds.ToString("N0") + ".";
-            List<ProtoVessel> there = ShipConstruction.FindVesselsLandedAt(HighLogic.CurrentGame.flightState, Site);
-            if (there != null && there.Count > 0) return "Something is on the runway already (" + there[0].vesselName + "): recover it first.";
+            List<ProtoVessel> there = ShipConstruction.FindVesselsLandedAt(HighLogic.CurrentGame.flightState, site);
+            if (there != null && there.Count > 0) return "Something is on the " + (site == Site ? "runway" : site) + " already (" + there[0].vesselName + "): recover it first.";
             return null;
         }
 
-        /// <summary>Put the car on the runway with a kerbal in its seat, and go there.</summary>
-        public static void Drive()
+        /// <summary>Put the car on the runway (or another launch site) with a kerbal in its seat, and go there.</summary>
+        public static void Drive(string site = Site)
         {
-            string why = WhyNot();
+            string why = WhyNot(site);
             if (why != null) throw new InvalidOperationException(why);
             ConfigNode craft = ConfigNode.Load(CraftPath);
             if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER && Funding.Instance != null)
@@ -88,8 +88,8 @@ namespace OnFoot
                 break;
             }
             string flag = HighLogic.CurrentGame.flagURL;
-            Kit.Log(Foot.Name, "the crew car goes out to the " + Site);
-            FlightDriver.StartWithNewLaunch(CraftPath, string.IsNullOrEmpty(flag) ? "Squad/Flags/default" : flag, Site, crew);
+            Kit.Log(Foot.Name, "the crew car goes out to the " + site);
+            FlightDriver.StartWithNewLaunch(CraftPath, string.IsNullOrEmpty(flag) ? "Squad/Flags/default" : flag, site, crew);
         }
     }
 }

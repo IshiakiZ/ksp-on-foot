@@ -290,6 +290,151 @@ namespace OnFoot
             return crafts + " of 48 lines stopped by the craft\n" + say;
         }
 
+        /// <summary>The crew car (the first one loaded in flight): where all its parts are, in its own frame.</summary>
+        public static string CarMeasure()
+        {
+            foreach (Vessel v in FlightGlobals.Vessels)
+            {
+                CarFrame f = CarFrame.Of(v);
+                if (f != null) return f.Report();
+            }
+            return "no crew car loaded";
+        }
+
+        /// <summary>The baggage tug drawn over each crew car loaded: where its tyres are and what they follow.</summary>
+        public static string TugReport()
+        {
+            var say = new System.Text.StringBuilder();
+            foreach (Vessel v in FlightGlobals.VesselsLoaded)
+            {
+                Tug t = Tug.On(v);
+                if (t != null) say.Append(t.Report()).Append("\n");
+            }
+            string why;
+            if (say.Length == 0) say.Append("no tug drawn").Append(TugModel.Ready(out why) ? "" : ": " + why);
+            foreach (Vessel v in FlightGlobals.VesselsLoaded)
+            {
+                CarCap c = CarCap.On(v);
+                if (c != null) say.Append("\n").Append(c.Report());
+            }
+            return say.ToString();
+        }
+
+        /// <summary>Crew cars drawn as tugs (arg "1") or as their stock parts ("0"), for measuring (the player's setting is left alone).</summary>
+        public static string TugOn(string arg) { CarLook.Off = !(arg == "1" || arg == "true"); return "tugs " + (CarLook.Off ? "off" : "on"); }
+
+        /// <summary>What the tugs cost: their work each frame (all of them), and the frames' lengths lately.</summary>
+        public static string TugCost()
+        {
+            float sum = 0f, worst = 0f;
+            int n = Math.Min(CarLook.frame, CarLook.Frames.Length);
+            for (int i = 0; i < n; i++) { sum += CarLook.Frames[i]; worst = Math.Max(worst, CarLook.Frames[i]); }
+            string say = "frames: " + (n > 0 ? (sum / n * 1000f).ToString("F2") + " ms on average over " + n + ", worst " + (worst * 1000f).ToString("F1") + " ms" : "none")
+                + "; the tugs' work: " + (Tug.Worked > 0 ? (Tug.Work.Elapsed.TotalMilliseconds * 1000.0 / Tug.Worked).ToString("F1") + " µs a frame over " + Tug.Worked + " frames" : "none");
+            Tug.Work.Reset(); Tug.Worked = 0;
+            return say;
+        }
+
+        /// <summary>The crew car's driver out of the seat (stands beside it).</summary>
+        public static string CarLeave()
+        {
+            foreach (Vessel v in FlightGlobals.VesselsLoaded)
+            {
+                CarFrame f = CarFrame.Of(v);
+                if (f == null) continue;
+                KerbalSeat seat = f.SeatPart.FindModuleImplementing<KerbalSeat>();
+                if (seat == null || seat.Occupant == null) return "the seat is empty";
+                string who = seat.Occupant.partInfo.title;
+                seat.LeaveSeat(null);
+                return who + " leaves the seat";
+            }
+            return "no crew car loaded";
+        }
+
+        /// <summary>The kerbal on EVA nearest the crew car put beside it (arg: metres to the car's right and forward of its middle), standing.</summary>
+        public static string KerbalBeside(string arg)
+        {
+            string[] p = (arg ?? "1.3 0").Split(' ');
+            float right = float.Parse(p[0], System.Globalization.CultureInfo.InvariantCulture), forward = p.Length > 1 ? float.Parse(p[1], System.Globalization.CultureInfo.InvariantCulture) : 0f;
+            CarFrame f = null;
+            foreach (Vessel v in FlightGlobals.VesselsLoaded) if ((f = CarFrame.Of(v)) != null) break;
+            if (f == null) return "no crew car loaded";
+            Vessel kerbal = null;
+            foreach (Vessel v in FlightGlobals.VesselsLoaded)
+                if (v.isEVA && (kerbal == null || (v.transform.position - f.Origin).sqrMagnitude < (kerbal.transform.position - f.Origin).sqrMagnitude)) kerbal = v;
+            if (kerbal == null) return "no kerbal on EVA";
+            Vector3 at = f.Origin + f.Right * right + f.Forward * forward + f.Up * 0.6f;
+            kerbal.SetPosition(at, true);
+            kerbal.SetRotation(Quaternion.LookRotation(f.Right * Math.Sign(right == 0 ? 1 : right) + f.Forward * 0.6f, f.Up));      // (facing out, a little forward)
+            kerbal.SetWorldVelocity(f.Vessel.rb_velocityD);
+            return kerbal.vesselName + " put at " + f.Local(at).ToString("F2") + " in the car's frame";
+        }
+
+        /// <summary>The kerbal on EVA nearest the crew car sat in its seat again (made the vessel flown first, as the seat needs).</summary>
+        public static string CarSit()
+        {
+            foreach (Vessel v in FlightGlobals.VesselsLoaded)
+            {
+                CarFrame f = CarFrame.Of(v);
+                if (f == null) continue;
+                KerbalSeat seat = f.SeatPart.FindModuleImplementing<KerbalSeat>();
+                if (seat == null) return "no seat";
+                if (seat.Occupant != null) return "the seat is taken";
+                Vessel kerbal = null;
+                foreach (Vessel k in FlightGlobals.VesselsLoaded)
+                    if (k.isEVA && (kerbal == null || (k.transform.position - v.transform.position).sqrMagnitude < (kerbal.transform.position - v.transform.position).sqrMagnitude)) kerbal = k;
+                if (kerbal == null) return "no kerbal on EVA";
+                if (FlightGlobals.ActiveVessel != kerbal) { FlightGlobals.ForceSetActiveVessel(kerbal); return "flying " + kerbal.vesselName + " now: call again to sit"; }
+                seat.BoardSeat();
+                return kerbal.vesselName + " boards the seat";
+            }
+            return "no crew car loaded";
+        }
+
+        /// <summary>The crew car made the vessel flown.</summary>
+        public static string CarFocus()
+        {
+            foreach (Vessel v in FlightGlobals.VesselsLoaded)
+                if (CarFrame.Is(v)) { FlightGlobals.ForceSetActiveVessel(v); return "flying " + v.vesselName; }
+            return "no crew car loaded";
+        }
+
+        /// <summary>Each tug posed again where its car is now.</summary>
+        public static string TugPose()
+        {
+            int n = 0;
+            foreach (Vessel v in FlightGlobals.VesselsLoaded) { Tug t = Tug.On(v); if (t != null) { t.Pose(); n++; } }
+            return n + " posed";
+        }
+
+        /// <summary>The crew car put on another launch site (arg: its name, e.g. LaunchPad).</summary>
+        public static string CarDriveAt(string site)
+        {
+            string why = Car.WhyNot(site);
+            if (why != null) return "not sent: " + why;
+            Car.Drive(site);
+            return "the crew car is going out to the " + site;
+        }
+
+        /// <summary>The crew car now: its speed, its height, how it leans (nose up, right side up) against the level, its heading.</summary>
+        public static string CarState()
+        {
+            foreach (Vessel v in FlightGlobals.VesselsLoaded)
+            {
+                CarFrame f = CarFrame.Of(v);
+                if (f == null) continue;
+                Vector3 level = (v.CoM - v.mainBody.position).normalized;
+                float pitch = Mathf.Asin(Mathf.Clamp(Vector3.Dot(f.Forward, level), -1f, 1f)) * Mathf.Rad2Deg;
+                float roll = Mathf.Asin(Mathf.Clamp(Vector3.Dot(-f.Right, level), -1f, 1f)) * Mathf.Rad2Deg;
+                Vector3 north = Vector3.ProjectOnPlane(v.mainBody.transform.up, level).normalized;
+                Vector3 east = Vector3.Cross(level, north);
+                float heading = Mathf.Repeat(Mathf.Atan2(Vector3.Dot(f.Forward, east), Vector3.Dot(f.Forward, north)) * Mathf.Rad2Deg, 360f);
+                return string.Format(CultureInfo.InvariantCulture, "{0} speed {1:F2} m/s, altitude {2:F2} m, {3:F2} m above the ground, pitch {4:F1}, roll {5:F1}, heading {6:F0}, {7}",
+                    v.situation, v.srfSpeed, v.altitude, v.heightFromTerrain, pitch, roll, heading, v.Landed ? "on the ground" : "off the ground");
+            }
+            return "no crew car loaded";
+        }
+
         /// <summary>The crew car: why it cannot go out now, or "ready".</summary>
         public static string CarWhyNot() => Car.WhyNot() ?? "ready";
 
