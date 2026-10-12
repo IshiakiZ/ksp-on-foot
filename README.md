@@ -4,12 +4,13 @@ Walk the floor of the assembly building and the hangar in first person, at a ker
 ground crew, under the rocket on its clamps, out through the great door onto the crawlerway. And a car for
 the ground crew to drive about the space centre: an airport baggage tug.
 
-For Kerbal Space Program 1.12.x. Needs [Keystone](https://github.com/IshiakiZ/ksp-keystone), which comes in the download, and
+For Kerbal Space Program 1.12.x. Needs [Keystone](https://github.com/IshiakiZ/ksp-keystone), a separate download ([its page on SpaceDock](https://spacedock.info/mod/4665/Keystone)) without which this mod does not load, and
 nothing else.
 
 ## Install and use
 
-Copy the `Keystone` and `OnFoot` folders from the download into your KSP `GameData`.
+Install [Keystone](https://github.com/IshiakiZ/ksp-keystone) first: it is a download of its own, and its `Keystone` folder goes into your KSP
+`GameData`. Then copy the `OnFoot` folder from this mod's download into `GameData` beside it.
 
 * In the **assembly building** or the **hangar**, press **Option-W** on a Mac (**Alt-W** elsewhere) to set
   off on foot from where the camera was. Walk with **W A S D** (the game's own EVA keys), look with the
