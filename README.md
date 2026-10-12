@@ -9,7 +9,7 @@ nothing else.
 
 ## Install and use
 
-Copy the `Keystone` and `OnFoot` folders from the download's `GameData` into your KSP `GameData`.
+Copy the `Keystone` and `OnFoot` folders from the download into your KSP `GameData`.
 
 * In the **assembly building** or the **hangar**, press **Option-W** on a Mac (**Alt-W** elsewhere) to set
   off on foot from where the camera was. Walk with **W A S D** (the game's own EVA keys), look with the
@@ -42,3 +42,7 @@ painted backdrop, or a picture ([what was found](docs/The-other-buildings.md)).
 More: [how it works](docs/How-it-works.md), [limits](docs/Limits.md),
 [what was tested](docs/What-was-tested.md),
 [building it yourself](docs/Building.md).
+
+## Licence
+
+[CC BY 4.0](LICENSE): use it, change it and pass it on as you like, as long as you credit Ishiaki and link back here.

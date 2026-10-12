@@ -5,7 +5,7 @@ Walk the floor of the assembly building and the hangar in first person, at a ker
 ground crew, and up to the craft you are building.
 
 INSTALL
-  Copy both folders in this download's GameData (Keystone and OnFoot) into your KSP's GameData folder,
+  Copy both folders in this download (Keystone and OnFoot) into your KSP's GameData folder,
   and start the game. Keystone is the base this mod stands on; one copy serves every mod that uses it.
   To remove the mod, delete the OnFoot folder.
 
