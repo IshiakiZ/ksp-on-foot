@@ -34,14 +34,25 @@ if [ -f src/OnFoot/needs.txt ]; then
   done < src/OnFoot/needs.txt
 fi
 
+# A companion library for the Harmony mod, where this mod has one (src/OnFootHarmony): built against this mod and against
+# Harmony, only where Harmony is installed in the game, and loaded by the game only where it is.
+HARMONY="$KSP_DIR/GameData/000_Harmony/0Harmony.dll"
+companion() {  # companion <folder the mod's own library is in>
+  [ -d src/OnFootHarmony ] || return 0
+  if [ -f "$HARMONY" ]; then WITH="$KEYSTONE:$1/OnFoot.dll:$HARMONY" compile "$1/OnFootHarmony.dll" "" src/OnFootHarmony
+  else rm -f "$1/OnFootHarmony.dll"; echo "left out: OnFootHarmony (Harmony is not installed here to build it against)"; fi
+}
+
 case "$MODE" in
   check)
     WITH="$KEYSTONE" compile "$TMP/OnFoot.dll" "" src/OnFoot
+    companion "$TMP"
     echo "ok: compiles"
     ;;
   dist|install)
     mkdir -p "$OUT"
     WITH="$KEYSTONE" compile "$OUT/OnFoot.dll" "" src/OnFoot
+    companion "$OUT"
     # (the mod's own shaders, if it has any: made by tools/shaderpack/make_bundle.py and kept ready made in src/OnFoot/Shaders)
     if ls src/OnFoot/Shaders/*.bundle >/dev/null 2>&1; then mkdir -p "$OUT/PluginData"; cp src/OnFoot/Shaders/*.bundle "$OUT/PluginData/"; fi
     # (and anything else it keeps in src/OnFoot/PluginData: a craft file, say)
@@ -49,6 +60,8 @@ case "$MODE" in
     if [ "$MODE" = dist ]; then echo "ok: built into $OUT"; exit 0; fi
     mkdir -p "$KSP_DIR/GameData/OnFoot"
     cp "$OUT/OnFoot.dll" "$KSP_DIR/GameData/OnFoot/"
+    rm -f "$KSP_DIR/GameData/OnFoot/OnFootHarmony.dll"
+    [ -f "$OUT/OnFootHarmony.dll" ] && cp "$OUT/OnFootHarmony.dll" "$KSP_DIR/GameData/OnFoot/"
     if [ -d "$OUT/PluginData" ]; then mkdir -p "$KSP_DIR/GameData/OnFoot/PluginData"; cp -R "$OUT/PluginData/." "$KSP_DIR/GameData/OnFoot/PluginData/"; fi
     echo "ok: On Foot installed to $KSP_DIR/GameData/OnFoot (restart KSP to load it; it needs Keystone there too)"
     ;;

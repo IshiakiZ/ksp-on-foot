@@ -4,6 +4,10 @@ Walk the floor of the assembly building and the hangar in first person, at a ker
 under the rocket on its clamps, out through the great door. And a car for the ground crew to drive about the space
 centre: an airport baggage tug.
 
+![Walking the assembly building's floor at a kerbal's height, under the rocket on its clamps](src/OnFoot/img/on-foot-walk.gif)
+
+![The ground crew's baggage tug driven along the runway](src/OnFoot/img/on-foot-crew-car.gif)
+
 For Kerbal Space Program 1.12.x. **Needs [Keystone](https://github.com/IshiakiZ/ksp-keystone)**, a separate download
 ([on SpaceDock](https://spacedock.info/mod/4665/Keystone)): this mod does not load without it.
 
