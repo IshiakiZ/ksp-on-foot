@@ -25,17 +25,21 @@ namespace OnFoot
     /// </summary>
     public static class Foot
     {
-        public const string Version = "0.2.1";
+        public const string Version = "0.3.0";
         internal const string Name = "On Foot";
 
         internal static Mod mod;
-        internal static Slider walk, run, look, fov, bob, eye;
-        internal static Toggle invert, hint;
+        internal static Slider walk, run, look, fov, bob, eye, steps;
+        internal static Toggle invert, hint, crew, body;
+
+        /// <summary>Its keys, as Keystone lists them (walking itself is on the game's own EVA keys).</summary>
+        static void Keys(Mod mod) => mod.Uses(KeyCode.W, true, "walk the floor, and back to the editor");
 
         public static void Setup()
         {
             if (mod != null && Kit.Find(Name) == mod) return;
             mod = Kit.Register(Name, Version, "Walk the floor of the assembly building and the hangar in first person, at a kerbal's height: among the ground crew, and up to the craft being built.");
+            try { Keys(mod); } catch (Exception) { }             // (for Keystone's page of every key; not with a Keystone older than 0.9.0)
             mod.Heading("Walking");
             walk = mod.Slider("walk", "Walking speed", 1.6f, 0.5f, 4f, " m/s", 1, "How fast you walk. (A kerbal on the ground crew walks at 0.7 m/s.)");
             run = mod.Slider("run", "Running speed", 4.5f, 1f, 10f, " m/s", 1, "How fast you go with the run key (the game's EVA run key, Shift unless you have changed it) held.");
@@ -44,8 +48,11 @@ namespace OnFoot
             look = mod.Slider("look", "Mouse speed", 1f, 0.2f, 4f, "", 1, "How far the view turns for a move of the mouse.");
             invert = mod.Toggle("invert", "Mouse up looks down", false, "Pushing the mouse away tilts the view down, as in a flight simulator.");
             fov = mod.Slider("fov", "Field of view", 60f, 35f, 95f, "°", 0, "How much you see, from the top of the picture to the bottom.");
-            bob = mod.Slider("bob", "Head movement", 0.5f, 0f, 1f, "", 2, "How much your head rises and falls with each step. None at 0.");
+            body = mod.Toggle("body", "Your own legs and feet", true, "Look down and you see yourself: one of the ground crew's own bodies, walking and running in step with you, its arms swinging. Off: nothing of you is drawn.");
+            bob = mod.Slider("bob", "Head movement", 1f, 0f, 1f, "", 2, "How much your head rises, falls and sways with each step and gives on landing: 1 is as a person's does, for your size (walking, lowest as a heel strikes; running, lowest as the leg takes the weight). None at 0.");
+            steps = mod.Slider("steps", "Footsteps", 0.6f, 0f, 1f, "", 2, "How loud your footsteps are, by what is underfoot: a hard floor, a grating, soft ground; and on landing from a fall. None at 0.");
             hint = mod.Toggle("hint", "Show the keys on starting", true, "For a few seconds after you set off, the keys are shown at the foot of the picture.");
+            crew = mod.Toggle("crew", "The ground crew make way", true, "The ground crew see you: one walking towards you steps aside to pass about a metre off, slowing if you stand in its way, and one standing about steps back as you come close. Off: they walk their rounds as the game has them, and push you aside if you are in their way.");
             mod.Heading("The crew car");
             tug = mod.Toggle("tug", "Looks like a baggage tug", true, "The crew car is drawn as an airport baggage tractor. Off, it shows the stock rover parts it is made of (it drives the same either way).");
             topSpeed = mod.Slider("speed", "Top speed", 30f, 10f, 100f, " km/h", 0, "How fast the crew car can drive itself on the level: its wheels' motors give less and less pull near this speed and none past it (a real baggage tug does about 25 km/h). It is not held there: downhill it can roll faster, and the brakes work as ever. At 100, the stock rover wheels' own limit (about 95 km/h).");

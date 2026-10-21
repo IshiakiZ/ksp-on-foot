@@ -124,6 +124,143 @@ namespace OnFoot
 
         public static string Script(string arg) { Scripted.Load(arg); return "script loaded: " + arg; }
 
+        /// <summary>(Since 0.3.0, for ladders.) The game's climbable ladders in the scene (shapes tagged "Ladder"), nearest first ("list"); or the walker put at the foot of the n-th of them ("0", "1"...), on the ground before it, facing it: where it is and how tall.</summary>
+        public static string Ladder(string arg)
+        {
+            if (Foot.Current == null) return "not walking";
+            Vector3 me = Foot.Current.transform.position;
+            var all = new List<Collider>();
+            foreach (Collider c in UnityEngine.Object.FindObjectsOfType<Collider>()) if (c != null && c.enabled && c.gameObject.activeInHierarchy && c.CompareTag("Ladder")) all.Add(c);
+            all.Sort((a, b) => (a.bounds.center - me).sqrMagnitude.CompareTo((b.bounds.center - me).sqrMagnitude));
+            string a0 = (arg ?? "").Trim();
+            if (a0 == "list" || a0.Length == 0)
+            {
+                var say = new StringBuilder(all.Count + " ladders:");
+                for (int i = 0; i < all.Count && i < 20; i++)
+                    say.Append("\n").Append(i).Append(": ").Append(all[i].name).Append(" (").Append(all[i].GetType().Name).Append(all[i].isTrigger ? ", passed through" : ", solid").Append(") ").Append(V(all[i].bounds.min)).Append(" to ").Append(V(all[i].bounds.max))
+                       .Append(", ").Append((all[i].bounds.center - me).magnitude.ToString("F0")).Append(" m off, under ").Append(Path(all[i].transform));
+                return say.ToString();
+            }
+            int n = (int)F(a0, 0f);
+            if (n < 0 || n >= all.Count) return "no ladder " + n + " (" + all.Count + ")";
+            Collider l = all[n];
+            Bounds bb = l.bounds;
+            // (in front of it, on the side away from what it stands against: tried round it for the side with open ground)
+            Vector3 best = Vector3.zero; bool found = false;
+            for (int k = 0; k < 8 && !found; k++)
+            {
+                float a = k * Mathf.PI / 4f;
+                Vector3 side = new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a));
+                Vector3 probe = new Vector3(bb.center.x, bb.max.y + 2f, bb.center.z) + side * (Mathf.Max(bb.extents.x, bb.extents.z) + 0.7f);
+                if (Physics.Raycast(probe, Vector3.down, out RaycastHit hit, bb.size.y + 30f, ~0, QueryTriggerInteraction.Ignore) && hit.point.y < bb.min.y + 1.0f)
+                {
+                    best = hit.point + Vector3.up * 0.05f; found = true;
+                }
+            }
+            if (!found) return "no open ground before " + l.name;
+            Foot.Current.Put(best);
+            Vector3 to = bb.center - best;
+            Foot.Current.Face(Mathf.Atan2(to.x, to.z) * Mathf.Rad2Deg, 0f);
+            return l.name + " from " + V(bb.min) + " to " + V(bb.max) + "; the walker put at " + V(best) + ", facing it";
+        }
+
+        /// <summary>(Since 0.3.0, for the crew making way.) The walker put in the way of the nearest of the crew walking, so far ahead of it on its line (arg, 5 m if not given), facing it; the readout of the crowd begun afresh.</summary>
+        public static string InPath(string arg)
+        {
+            if (Foot.Current == null) return "not walking";
+            float ahead = F(arg, 5f);
+            Vector3 me = Foot.Current.transform.position;
+            global::SpaceCenterCrew best = null; Vector3 bestGoing = Vector3.zero; float bestD = float.MaxValue;
+            // (one with a long straight way still to go to where it is walking, so that it walks on into the walker: its target, read
+            // from the game's own field)
+            System.Reflection.FieldInfo targetField = Keystone.Reach.Field(typeof(global::SpaceCenterCrew), "target");
+            foreach (KeyValuePair<global::SpaceCenterCrew, Vector3> kv in Crowd.GoingNow)
+            {
+                if (kv.Key == null || kv.Value.magnitude < 0.3f) continue;
+                if (targetField != null && targetField.GetValue(kv.Key) is Vector3 target && target.sqrMagnitude > 1e-4f)
+                {
+                    Vector3 left = target - kv.Key.transform.position; left.y = 0f;
+                    if (Vector3.Dot(left, kv.Value.normalized) < ahead + 2f) continue;
+                }
+                float d = (kv.Key.transform.position - me).magnitude;
+                if (d < bestD) { bestD = d; best = kv.Key; bestGoing = kv.Value; }
+            }
+            if (best == null) return "none of the crew walking (" + Crowd.GoingNow.Count + " seen)";
+            Vector3 c = best.transform.position, way = bestGoing.normalized;
+            Vector3 at = c + way * ahead;
+            at.y = c.y + 0.05f;
+            Foot.Current.Put(at);
+            Vector3 to = c - at;
+            Foot.Current.Face(Mathf.Atan2(to.x, to.z) * Mathf.Rad2Deg, 5f);
+            Crowd.Nearest = float.MaxValue; Crowd.Moved = 0f; Crowd.Gave = 0;
+            return best.name + " at " + V(c) + " going " + V(bestGoing) + " (" + bestGoing.magnitude.ToString("F2") + " m/s); the walker put " + ahead.ToString("F1") + " m ahead of it, facing it";
+        }
+
+        /// <summary>(Since 0.3.0.) What the crowd has done since InPath: the nearest any of the crew came, how far they were moved aside in all, how many frames one gave way.</summary>
+        public static string BodySaid() => Foot.Current != null ? Foot.Current.BodySaid : "not walking";
+        public static string CrowdSaid() => "nearest " + Crowd.Nearest.ToString("F2") + " m, moved aside " + Crowd.Moved.ToString("F2") + " m in all, giving way in " + Crowd.Gave + " frames";
+
+        /// <summary>
+        /// (For the walker's own legs, 14.2.) One of the ground crew (arg: which, from 0) as it is made: every piece under it (where, from
+        /// its feet, in its own frame), what draws it (meshes, bones, materials and their shaders), what moves it (its animations and
+        /// their lengths, or an animator), and how tall it stands. "eva": the same of the game's EVA kerbal, as the part list has it.
+        /// </summary>
+        public static string CrewModel(string arg)
+        {
+            GameObject root;
+            if ((arg ?? "").Trim() == "eva")
+            {
+                AvailablePart eva = PartLoader.getPartInfoByName("kerbalEVA");
+                if (eva == null || eva.partPrefab == null) return "no EVA kerbal in the part list";
+                root = eva.partPrefab.gameObject;
+            }
+            else
+            {
+                var crew = UnityEngine.Object.FindObjectsOfType<global::SpaceCenterCrew>();
+                int which = (int)F(arg, 0f);
+                if (crew.Length == 0) return "no ground crew in this scene";
+                if (which >= crew.Length) return "only " + crew.Length + " of the crew";
+                root = crew[which].gameObject;
+            }
+            var o = new StringBuilder();
+            Transform top = root.transform;
+            o.Append(Path(top)).Append(", scale ").Append(V(top.lossyScale)).Append(", on layer ").Append(root.layer).Append('\n');
+            var bounds = new Bounds(top.position, Vector3.zero);
+            foreach (Renderer r in root.GetComponentsInChildren<Renderer>(true)) bounds.Encapsulate(r.bounds);
+            o.Append("drawn within ").Append(V(bounds.min - top.position)).Append(" to ").Append(V(bounds.max - top.position)).Append(" of its place\n");
+            void Walk(Transform t, int depth)
+            {
+                if (depth > 14) return;
+                o.Append(new string(' ', depth * 2)).Append(t.name).Append(" at ").Append(V(top.InverseTransformPoint(t.position)));
+                if (!t.gameObject.activeSelf) o.Append(" (off)");
+                foreach (Component c in t.GetComponents<Component>())
+                {
+                    if (c == null || c is Transform) continue;
+                    o.Append(" [").Append(c.GetType().Name);
+                    if (c is SkinnedMeshRenderer s) o.Append(": ").Append(s.sharedMesh != null ? s.sharedMesh.name + " " + s.sharedMesh.vertexCount + " corners" : "no mesh").Append(", ").Append(s.bones != null ? s.bones.Length : 0).Append(" bones, root ").Append(s.rootBone != null ? s.rootBone.name : "none");
+                    if (c is MeshFilter mf) o.Append(": ").Append(mf.sharedMesh != null ? mf.sharedMesh.name + " " + mf.sharedMesh.vertexCount + " corners" : "no mesh");
+                    if (c is Renderer rr) foreach (Material m in rr.sharedMaterials) o.Append(", ").Append(m != null ? m.name + " (" + m.shader.name + ")" : "none");
+                    if (c is Animation an) foreach (AnimationState st in an) o.Append(", ").Append(st.name).Append(' ').Append(st.length.ToString("F2")).Append(" s");
+                    if (c is Animator am) o.Append(": ").Append(am.runtimeAnimatorController != null ? am.runtimeAnimatorController.name : "no controller").Append(am.avatar != null ? ", avatar " + am.avatar.name : "");
+                    if (c is MonoBehaviour mb) o.Append(mb.enabled ? "" : " (off)");
+                    o.Append(']');
+                }
+                o.Append('\n');
+                foreach (Transform child in t) Walk(child, depth + 1);
+            }
+            Walk(top, 0);
+            return o.ToString();
+        }
+
+        /// <summary>The eyes' height and sway traced frame by frame ("on"), or what was traced ("read": seconds, rise and sway in cm, footfalls, on the ground, running).</summary>
+        public static string Eyes(string arg)
+        {
+            if ((arg ?? "").Trim() == "on") { Walk.Traced = new System.Text.StringBuilder(); return "tracing"; }
+            string said = Walk.Traced != null ? Walk.Traced.ToString() : "not traced";
+            Walk.Traced = null;
+            return said;
+        }
+
         /// <summary>Turn to face the craft in the editor (arg: how far up it to look, 0 its foot to 1 its top; 0.3 if not given).</summary>
         public static string FaceCraft() => FaceCraft("0.3");
 
@@ -626,6 +763,43 @@ namespace OnFoot
                    .Append(r != null ? " bounds " + V(r.bounds.center) + " size " + V(r.bounds.size) + " shader " + (r.sharedMaterial != null && r.sharedMaterial.shader != null ? r.sharedMaterial.shader.name + " q" + r.sharedMaterial.renderQueue : "none") + (r.enabled ? "" : " (off)") : "").Append("\n");
             }
             return say.ToString();
+        }
+
+        /// <summary>(Since 0.3.0, for ladders.) Everything in the scene named like a ladder, a rung, stairs or a catwalk: its name, where, how big, and whether it is solid.</summary>
+        public static string Ladders()
+        {
+            var said = new System.Text.StringBuilder();
+            int n = 0;
+            foreach (Transform t in UnityEngine.Object.FindObjectsOfType<Transform>())
+            {
+                string name = t.name.ToLowerInvariant();
+                if (!(name.Contains("ladder") || name.Contains("rung") || name.Contains("stair") || name.Contains("catwalk") || name.Contains("step"))) continue;
+                if (++n > 60) break;
+                Renderer r = t.GetComponent<Renderer>();
+                Collider c = t.GetComponent<Collider>();
+                said.Append(t.name).Append(" at ").Append(t.position.ToString("F1")).Append(r != null ? " size " + r.bounds.size.ToString("F1") : "").Append(c != null ? " solid (" + c.GetType().Name + ")" : "").Append("; ");
+            }
+            return n == 0 ? "nothing named like a ladder" : n + ": " + said;
+        }
+
+        /// <summary>(Since 0.3.0, for the crew making way.) What moves one of the ground crew: its components, and the first one's fields and their values.</summary>
+        public static string CrewWorks()
+        {
+            var said = new System.Text.StringBuilder();
+            global::SpaceCenterCrew one = UnityEngine.Object.FindObjectOfType<global::SpaceCenterCrew>();
+            if (one == null) return "no ground crew here";
+            foreach (Component c in one.GetComponentsInChildren<Component>(true))
+                if (c != null && !(c is Transform) && !(c is Renderer)) said.Append(c.GetType().FullName).Append(" on ").Append(c.gameObject.name).Append("; ");
+            said.Append("\nSpaceCenterCrew: ");
+            const System.Reflection.BindingFlags all = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic;
+            for (Type t = one.GetType(); t != null && t != typeof(MonoBehaviour); t = t.BaseType)
+                foreach (System.Reflection.FieldInfo f in t.GetFields(all | System.Reflection.BindingFlags.DeclaredOnly))
+                {
+                    object v = null;
+                    try { v = f.GetValue(one); } catch (Exception) { }
+                    said.Append(t.Name).Append(".").Append(f.Name).Append(" (").Append(f.FieldType.Name).Append(") = ").Append(v == null ? "null" : v.ToString().Length > 60 ? v.ToString().Substring(0, 60) : v.ToString()).Append("; ");
+                }
+            return said.ToString();
         }
 
         /// <summary>The ground crew (the game's GroundCrew, and everything on the crew's layer): how tall, where.</summary>

@@ -8,7 +8,7 @@ centre: an airport baggage tug.
 
 ![The ground crew's baggage tug driven along the runway](src/OnFoot/img/on-foot-crew-car.gif)
 
-For Kerbal Space Program 1.12.x. **Needs [Keystone](https://github.com/IshiakiZ/ksp-keystone)**, a separate download
+For Kerbal Space Program 1.12.x. **Needs [Keystone](https://github.com/IshiakiZ/ksp-keystone) 0.9 or later**, a separate download
 ([on SpaceDock](https://spacedock.info/mod/4665/Keystone)): this mod does not load without it.
 
 ## Install
@@ -25,7 +25,11 @@ Copy the `OnFoot` folder from the download into your KSP's `GameData`, beside `K
   keystone button on the game's toolbar, or Alt-K; Option-K on a Mac). It is put on the runway and driven with the
   rover keys.
 
-The same page has the walking and running speeds, the eye height, the mouse and the field of view.
+The same page has the walking and running speeds, the eye height, the mouse, the field of view and how loud
+your footsteps are (since 0.3.0: by what is underfoot, a hard floor, a grating or soft ground). Since 0.3.0 the
+ground crew make way for you, stepping aside to pass about a metre off, and the ladders a kerbal can climb are
+climbed: walk into one, back goes down, **Space** lets go. Look down and you see yourself: one of the ground crew's own
+bodies, its arms swinging and its knees stepping in time with you.
 
 ## Good to know
 
@@ -34,10 +38,10 @@ The same page has the walking and running speeds, the eye height, the mouse and 
 
 ## Works on
 
-Windows 11 (Direct3D 11) and Mac: tried. Linux: never run.
+Mac: tried. Windows 11 (Direct3D 11): 0.2.1 tried; what 0.3.0 adds, not yet. Linux: never run.
 
-**More:** [the long description](docs/The-long-description.md) (everything in full, and what was
-tried on each system) and the rest of the [wiki](docs/README.md).
+**More:** [the long description](https://github.com/IshiakiZ/ksp-on-foot/wiki/The-long-description) (everything in full, and what was
+tried on each system) and the rest of the [wiki](https://github.com/IshiakiZ/ksp-on-foot/wiki).
 
 ## Licence
 

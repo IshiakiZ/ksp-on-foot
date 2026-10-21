@@ -2,10 +2,11 @@ On Foot @VERSION@
 for Kerbal Space Program 1.12.x
 
 Walk the floor of the assembly building and the hangar in first person, at a kerbal's height: among the
-ground crew, and up to the craft you are building.
+ground crew, and up to the craft you are building. From 0.3.0: the ground crew make way, ladders
+are climbed, footsteps sound by what is underfoot, and looking down you see your own legs and feet.
 
 INSTALL
-  This mod needs Keystone, the base it stands on, which is a separate download:
+  This mod needs Keystone 0.9 or later, the base it stands on, which is a separate download:
     https://spacedock.info/mod/4665/Keystone
   Copy Keystone's folder (Keystone) into your KSP's GameData folder, and the OnFoot
   folder from this download beside it, and start the game. Without Keystone the game does
@@ -25,8 +26,9 @@ USE
   speed, 30 km/h unless changed on the page.
 
 WHERE IT WORKS
-  Made and tried on a Mac, and tried on Windows 11: walking in the assembly building and the crew
-  car. Nobody has run it on Linux yet. It has no shaders of its own (the tug is drawn with the game's
-  own part shaders) and nothing in it is the Mac's own.
+  Made and tried on a Mac, and tried on Windows 11 (0.2.1: walking in the assembly
+  building, and the crew car); what 0.3.0 adds has been run on the Mac only so far.
+  Nobody has run it on Linux yet. It has no shaders of its own (the tug is drawn with the
+  game's own part shaders) and nothing in it is the Mac's own.
 
 Everything else: https://github.com/IshiakiZ/ksp-on-foot
