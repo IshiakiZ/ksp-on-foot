@@ -11,7 +11,9 @@ namespace OnFoot
     /// or catwalk the same with the steel ringing and rattling in its frame; on soft ground a muffled thud in the rustle of what
     /// gives under it. A kerbal is light, so its steps are light: soft, and higher than a person's. Running, harder and closer
     /// together. Made here, as Fragmentation's sounds are (a few takes of each, chosen among and pitched a little apart, so that
-    /// no two steps in a row are the same), not taken from recordings.
+    /// no two steps in a row are the same). Since 0.4.0, where the mod has its recordings (Keystone 0.10.0's Sounds), real
+    /// footsteps from Sonniss's libraries instead: paving for a hard floor, steel for a grating, grass for soft ground, and a
+    /// landing's; pitched up a little, a kerbal being light. The made ones meanwhile, and wherever there are none.
     ///
     /// What is underfoot is told from the name of what a line straight down from the feet meets (its object's, its collider's
     /// and its material's): "grat", "grid", "mesh", "catwalk" or "walkway" for a grating; "grass", "terrain", "dirt", "sand" or
@@ -38,17 +40,75 @@ namespace OnFoot
         /// <summary>A footstep, or a landing, on what is underfoot.</summary>
         public static void Play(AudioSource s, Floor floor, bool run, float landing)
         {
-            if (s == null) return;
+            if (s == null || Hush.Paused) return;
             if (clips == null) Make();
             int take = Random.Range(0, Takes);
             if (take == last) take = (take + 1) % Takes;
             last = take;
-            AudioClip clip = clips[(int)floor][take];
+            AudioClip heard = RecordedFor(floor, landing > 0.3f);
+            AudioClip clip = heard != null ? heard : clips[(int)floor][take];
             float loud = Foot.steps != null ? Foot.steps.Value : 0.6f;
             loud *= GameSettings.AMBIENCE_VOLUME * (run ? 1.3f : 1f) * (1f + 1.5f * Mathf.Clamp01(landing));
             if (loud < 0.003f) return;
-            s.pitch = Random.Range(0.94f, 1.07f) * (landing > 0f ? 0.85f : 1f);
+            s.pitch = (heard != null ? Random.Range(1.04f, 1.14f) : Random.Range(0.94f, 1.07f)) * (landing > 0f && heard == null ? 0.85f : 1f);
             s.PlayOneShot(clip, Mathf.Min(1f, loud));
+#if DEV
+            if (heard != null) Recorded++; else Made++;
+#endif
+        }
+#if DEV
+        /// <summary>(Development build: the steps heard so far, recorded and made, there being no ears here.)</summary>
+        internal static int Recorded, Made;
+#endif
+
+        // ---- the recordings (since 0.4.0)
+        static readonly string[] Kinds = { "step-paved-", "step-metal-", "step-grass-" };
+        static System.Collections.Generic.List<string>[] recorded;
+        static System.Collections.Generic.List<string> landings;
+        static bool recordedGone;
+        static int lastRecorded = -1;
+
+        /// <summary>
+        /// The recordings asked for ahead of the first step: as the space centre or a building where one can walk opens. (Asked
+        /// for at the first step, the first four steps of a walk were made ones: Keystone reads one sound a frame, and there
+        /// are fifty-five.)
+        /// </summary>
+        public static void AskAhead()
+        {
+            if (recordedGone || recorded != null) return;
+            try { Recording(Floor.Hard, false); }
+            catch (System.Exception) { recordedGone = true; }
+        }
+
+        /// <summary>A recorded step (or landing) for what is underfoot, once loaded; null without the recordings, or until then.</summary>
+        static AudioClip RecordedFor(Floor floor, bool landing)
+        {
+            if (recordedGone) return null;
+            try { return Recording(floor, landing); }
+            catch (System.Exception) { recordedGone = true; return null; }      // (a Keystone older than 0.10.0: no Sounds there)
+        }
+
+        static AudioClip Recording(Floor floor, bool landing)
+        {
+            if (recorded == null)
+            {
+                recorded = new System.Collections.Generic.List<string>[3];
+                for (int f = 0; f < 3; f++) recorded[f] = new System.Collections.Generic.List<string>();
+                landings = new System.Collections.Generic.List<string>();
+                foreach (string name in Keystone.Sounds.Names("OnFoot"))
+                {
+                    for (int f = 0; f < 3; f++) if (name.StartsWith(Kinds[f])) recorded[f].Add(name);
+                    if (name.StartsWith("land-")) landings.Add(name);
+                    // (all of them loaded at the first step: a step cannot wait for its sound)
+                    Keystone.Sounds.Get("OnFoot", name, _ => { });
+                }
+            }
+            System.Collections.Generic.List<string> from = landing && landings.Count > 0 ? landings : recorded[(int)floor];
+            if (from.Count == 0) return null;
+            int pick = Random.Range(0, from.Count);
+            if (pick == lastRecorded && from.Count > 1) pick = (pick + 1) % from.Count;
+            lastRecorded = pick;
+            return Keystone.Sounds.Ready("OnFoot", from[pick]);
         }
 
         static void Make()

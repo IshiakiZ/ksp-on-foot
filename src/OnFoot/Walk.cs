@@ -18,6 +18,7 @@ namespace OnFoot
     {
         /// <summary>The body: a kerbal of the ground crew is 0.9 to 1 m tall, and half a metre across.</summary>
         public const float Radius = 0.25f, Height = 1.0f;
+        // (as installed: the page's fine details may set others)
         const float Step = 0.3f, Slope = 50f, Jump = 0.5f, Ease = 0.7f, EaseOut = 0.45f;
 
         Place place;
@@ -61,12 +62,13 @@ namespace OnFoot
             holder.transform.position = feet;
             var body = holder.AddComponent<CharacterController>();
             body.radius = Radius; body.height = Height; body.center = new Vector3(0f, Height * 0.5f, 0f);
-            body.stepOffset = Step; body.slopeLimit = Slope; body.skinWidth = 0.03f; body.minMoveDistance = 0f;
+            body.stepOffset = Foot.Of(Foot.stepUp, Step); body.slopeLimit = Foot.Of(Foot.slope, Slope); body.skinWidth = 0.03f; body.minMoveDistance = 0f;
             var walk = holder.AddComponent<Walk>();
             walk.place = place; walk.body = body;
             Crowd.Join(holder, holder.transform);
             walk.feetSound = holder.AddComponent<AudioSource>();
             walk.feetSound.spatialBlend = 0f; walk.feetSound.playOnAwake = false; walk.feetSound.dopplerLevel = 0f;
+            Hush.Add(walk.feetSound);
             walk.heading = heading; walk.pitch = pitch;
             walk.began = 0f;
             walk.settled = 0.25f;
@@ -165,11 +167,13 @@ namespace OnFoot
             if (grounded)
             {
                 rising = -2f;                                                 // (held to the ground, down steps and slopes)
-                if (drive.Jump) rising = Mathf.Sqrt(2f * place.Gravity * Jump);
+                if (drive.Jump) rising = Mathf.Sqrt(2f * place.Gravity * Foot.Of(Foot.jump, Jump));
             }
             else rising = Mathf.Max(rising - place.Gravity * dt, -40f);
 
             float fall = rising;
+            // (the page's highest step and steepest slope, as they are now: they may be changed during a walk)
+            body.stepOffset = Foot.Of(Foot.stepUp, Step); body.slopeLimit = Foot.Of(Foot.slope, Slope);
             CollisionFlags hit = body.Move((going + up * rising) * dt);
             bool wasGrounded = grounded;
             grounded = (hit & CollisionFlags.Below) != 0 || (body.isGrounded && rising <= 0f);
@@ -327,13 +331,13 @@ namespace OnFoot
             {
                 // ---- rising back to where the game's camera was, then everything handed back
                 if (leaveFov <= 0f) { leaveEye = eye; leaveLook = look; leaveFov = fov; }
-                float s = Smooth((clock - ending) / EaseOut);
+                float s = Smooth((clock - ending) / Foot.Of(Foot.leaves, EaseOut));
                 place.Look(Vector3.Lerp(leaveEye, fromEye, s), Quaternion.Slerp(leaveLook, fromLook, s), Mathf.Lerp(leaveFov, fromFov, s), 1f - s);
                 if (s >= 1f) Finish(true);
                 return;
             }
             // ---- coming down from the game's camera to the eyes, at first
-            float e = Smooth((clock - began) / Ease);
+            float e = Smooth((clock - began) / Foot.Of(Foot.comes, Ease));
             if (e < 1f) place.Look(Vector3.Lerp(fromEye, eye, e), Quaternion.Slerp(fromLook, look, e), Mathf.Lerp(fromFov, fov, e), e);
             else place.Look(eye, look, fov, 1f);
         }

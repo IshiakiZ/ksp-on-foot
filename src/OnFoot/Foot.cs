@@ -4,7 +4,7 @@ using UnityEngine;
 
 #if !DEV
 [assembly: KSPAssembly("OnFoot", 0, 2)]
-[assembly: KSPAssemblyDependency("Keystone", 0, 4)]
+[assembly: KSPAssemblyDependency("Keystone", 0, 11)]
 #endif
 
 namespace OnFoot
@@ -25,12 +25,21 @@ namespace OnFoot
     /// </summary>
     public static class Foot
     {
-        public const string Version = "0.3.0";
+        public const string Version = "0.4.0";
         internal const string Name = "On Foot";
 
         internal static Mod mod;
         internal static Slider walk, run, look, fov, bob, eye, steps;
         internal static Toggle invert, hint, crew, body;
+        // (the page's fine details, in its Advanced view: each as installed does what the mod did before it had them)
+        internal static Slider jump, stepUp, slope, comes, leaves, passRoom, standRoom;
+        internal static float Of(Slider slider, float installed) => slider != null ? (float)slider : installed;
+
+        /// <summary>The settings added after Fine(true) are fine details: on the page only in Keystone's Advanced view, until Fine(false).
+        /// (Keystone 0.11.0 has the two views; an older one has neither call, and shows the fine details with the rest.)</summary>
+        static void Fine(bool fine) { try { if (fine) Advanced(mod); else Simple(mod); } catch (Exception) { } }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] static void Advanced(Mod page) => page.Advanced();
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] static void Simple(Mod page) => page.Simple();
 
         /// <summary>Its keys, as Keystone lists them (walking itself is on the game's own EVA keys).</summary>
         static void Keys(Mod mod) => mod.Uses(KeyCode.W, true, "walk the floor, and back to the editor");
@@ -44,15 +53,28 @@ namespace OnFoot
             walk = mod.Slider("walk", "Walking speed", 1.6f, 0.5f, 4f, " m/s", 1, "How fast you walk. (A kerbal on the ground crew walks at 0.7 m/s.)");
             run = mod.Slider("run", "Running speed", 4.5f, 1f, 10f, " m/s", 1, "How fast you go with the run key (the game's EVA run key, Shift unless you have changed it) held.");
             eye = mod.Slider("eye", "Eye height", 0.8f, 0.5f, 2f, " m", 2, "How high your eyes are above the floor. The ground crew are 0.9 to 1 m tall, and a kerbal's eyes are 0.8 m up; a person's would be 1.6 m.");
+            Fine(true);
+            jump = mod.Slider("jump", "How high you jump", 0.5f, 0f, 1.5f, " m", 2, "How far your feet leave the floor with the jump key. At nought the key does nothing.");
+            stepUp = mod.Slider("stepup", "The highest step walked up", 0.3f, 0.05f, 0.6f, " m", 2, "Anything underfoot lower than this, a step or a kerb, you walk up without a jump; anything higher stops you.");
+            slope = mod.Slider("slope", "The steepest slope walked up", 50f, 20f, 75f, "°", 0, "Anything steeper is a wall to you: you slide back down it.");
+            Fine(false);
             mod.Heading("Looking");
             look = mod.Slider("look", "Mouse speed", 1f, 0.2f, 4f, "", 1, "How far the view turns for a move of the mouse.");
             invert = mod.Toggle("invert", "Mouse up looks down", false, "Pushing the mouse away tilts the view down, as in a flight simulator.");
             fov = mod.Slider("fov", "Field of view", 60f, 35f, 95f, "°", 0, "How much you see, from the top of the picture to the bottom.");
+            Fine(true);
+            comes = mod.Slider("comes", "Coming down to your eyes", 0.7f, 0.1f, 3f, " s", 2, "How long the view takes to come down from the game's camera to your eyes when you set off.");
+            leaves = mod.Slider("leaves", "Rising back", 0.45f, 0.1f, 3f, " s", 2, "How long the view takes to rise back to where the game's camera was when you stop.");
+            Fine(false);
             body = mod.Toggle("body", "Your own legs and feet", true, "Look down and you see yourself: one of the ground crew's own bodies, walking and running in step with you, its arms swinging. Off: nothing of you is drawn.");
             bob = mod.Slider("bob", "Head movement", 1f, 0f, 1f, "", 2, "How much your head rises, falls and sways with each step and gives on landing: 1 is as a person's does, for your size (walking, lowest as a heel strikes; running, lowest as the leg takes the weight). None at 0.");
             steps = mod.Slider("steps", "Footsteps", 0.6f, 0f, 1f, "", 2, "How loud your footsteps are, by what is underfoot: a hard floor, a grating, soft ground; and on landing from a fall. None at 0.");
             hint = mod.Toggle("hint", "Show the keys on starting", true, "For a few seconds after you set off, the keys are shown at the foot of the picture.");
             crew = mod.Toggle("crew", "The ground crew make way", true, "The ground crew see you: one walking towards you steps aside to pass about a metre off, slowing if you stand in its way, and one standing about steps back as you come close. Off: they walk their rounds as the game has them, and push you aside if you are in their way.");
+            Fine(true);
+            passRoom = mod.Slider("passroom", "Room the crew give you passing", 1f, 0.3f, 2.5f, " m", 2, "One of the ground crew walking towards you steps aside to pass at least this far from you.");
+            standRoom = mod.Slider("standroom", "Room the crew give you standing", 1.25f, 0.5f, 3f, " m", 2, "One standing about steps back from you when you come nearer than this, a metre at most from where they stood.");
+            Fine(false);
             mod.Heading("The crew car");
             tug = mod.Toggle("tug", "Looks like a baggage tug", true, "The crew car is drawn as an airport baggage tractor. Off, it shows the stock rover parts it is made of (it drives the same either way).");
             topSpeed = mod.Slider("speed", "Top speed", 30f, 10f, 100f, " km/h", 0, "How fast the crew car can drive itself on the level: its wheels' motors give less and less pull near this speed and none past it (a real baggage tug does about 25 km/h). It is not held there: downhill it can roll faster, and the brakes work as ever. At 100, the stock rover wheels' own limit (about 95 km/h).");
@@ -91,6 +113,7 @@ namespace OnFoot
             Foot.Setup();
             Foot.mod.Panel = Panel;
             GameEvents.onGameSceneLoadRequested.Add(Leaving);
+            if (HighLogic.LoadedSceneIsEditor || HighLogic.LoadedScene == GameScenes.SPACECENTER) Steps.AskAhead();
         }
 
         void OnDestroy()

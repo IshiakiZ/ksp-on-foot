@@ -29,7 +29,10 @@ The same page has the walking and running speeds, the eye height, the mouse, the
 your footsteps are (since 0.3.0: by what is underfoot, a hard floor, a grating or soft ground). Since 0.3.0 the
 ground crew make way for you, stepping aside to pass about a metre off, and the ladders a kerbal can climb are
 climbed: walk into one, back goes down, **Space** lets go. Look down and you see yourself: one of the ground crew's own
-bodies, its arms swinging and its knees stepping in time with you.
+bodies, its arms swinging and its knees stepping in time with you. With Keystone 0.11.0, seven finer details in its
+Advanced view: how high you jump, the highest step and the steepest slope walked up, how long the view takes to come down
+to your eyes and to rise back, and how much room the ground crew give you.
+[All of them](https://github.com/IshiakiZ/ksp-on-foot/wiki/The-long-description#install-and-use).
 
 ## Good to know
 

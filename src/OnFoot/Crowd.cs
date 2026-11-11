@@ -22,6 +22,7 @@ namespace OnFoot
     /// </summary>
     public sealed class Crowd : MonoBehaviour
     {
+        // (Clear and Room as installed: the page's fine details may set others)
         const float Clear = 1.0f, Ahead = 3f, Near = 4f, Side = 0.6f, Back = 0.4f, Room = 1.25f, MostBack = 1f;
 
         Transform walker;
@@ -109,12 +110,13 @@ namespace OnFoot
             if (when > Ahead && r.sqrMagnitude > Near * Near) return Vector3.zero;
             Vector3 nearest = r + rel * when;                                       // where the walker would be from it, nearest
             float near = nearest.magnitude;
-            if (near >= Clear) return Vector3.zero;
+            float clear = Foot.Of(Foot.passRoom, Clear);
+            if (near >= clear) return Vector3.zero;
             Vector3 way = going.normalized, right = Vector3.Cross(Vector3.up, way);
             // (away from the side the walker would pass on: across its way; straight ahead, to its right)
             float onRight = Vector3.Dot(nearest, right);
             Vector3 aside = Mathf.Abs(onRight) > 0.05f ? right * -Mathf.Sign(onRight) : right;
-            float need = (Clear - near) / Mathf.Max(when, 0.4f);
+            float need = (clear - near) / Mathf.Max(when, 0.4f);
             Vector3 moved = aside * (Mathf.Min(need, Side) * dt);
             // (the walker standing right in its way, close: it slows, to let the step aside do its work)
             float ahead = Vector3.Dot(r, way);
@@ -129,8 +131,8 @@ namespace OnFoot
         /// <summary>One standing about: a step back from a walker coming within a metre and a quarter, a metre at most from where it stood.</summary>
         Vector3 Standing(global::SpaceCenterCrew one, Vector3 c, Vector3 r, Vector3 wGoing, float dt)
         {
-            float d = r.magnitude;
-            if (d >= Room || d < 1e-3f) return Vector3.zero;
+            float d = r.magnitude, room = Foot.Of(Foot.standRoom, Room);
+            if (d >= room || d < 1e-3f) return Vector3.zero;
             if (!stoodAt.TryGetValue(one, out Vector3 home)) { home = c; stoodAt[one] = home; }
             Vector3 away = -r / d;
             // (out of the walker's way: back, and to the side the walker is passing it on, if the walker is going by)
@@ -139,7 +141,7 @@ namespace OnFoot
                 Vector3 across = Vector3.Cross(Vector3.up, wGoing.normalized);
                 away = (away + across * Mathf.Sign(Vector3.Dot(-r, across)) * 0.6f).normalized;
             }
-            Vector3 moved = away * (Back * dt * (Room - d) / Room * 2f);
+            Vector3 moved = away * (Back * dt * (room - d) / room * 2f);
             Vector3 from = c + moved - home; from.y = 0f;
             if (from.magnitude > MostBack) return Vector3.zero;
 #if DEV

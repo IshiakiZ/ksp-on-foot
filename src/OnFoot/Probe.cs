@@ -101,6 +101,8 @@ namespace OnFoot
         }
 
         public static string Stop() { Feet.Stop(); return "stopping"; }
+        /// <summary>(The steps heard so far: recorded ones, where the mod has them, and made ones.)</summary>
+        public static string StepsHeard() => Steps.Recorded + " recorded steps, " + Steps.Made + " made";
         public static string StopNow() { Feet.Stop(true); return "stopped"; }
         public static string Stats() => Foot.Current != null ? Foot.Current.Stats() : "not walking" + (string.IsNullOrEmpty(Foot.WhyNot) ? "" : ": " + Foot.WhyNot);
 
